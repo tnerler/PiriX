@@ -1,0 +1,15 @@
+# -- .env files --
+.env
+
+# -- key files --
+keys/
+
+# -- Vector Database -- (you need to create it yourself)
+vector_db/
+
+# -- .venv -- (you need to create it yourself)
+.venv/
+
+# -- cache files -- 
+__pycache__
+*pyc
