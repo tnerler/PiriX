@@ -43,17 +43,6 @@ class FeedBackMessage(BaseModel):
     feedback_type: str
     session_id: str | None = None
 
-
-# --- Routes --- 
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    session_id = str(uuid.uuid4())
-    with open("templates/index.html") as f:
-        html_content = f.read()
-    html_content = html_content.replace("{{ session_id }}", session_id)
-    return HTMLResponse(content=html_content)
-
-
 @app.post("/ask")
 def ask(msg: AskMessage): 
     session_id = msg.session_id or str(uuid.uuid4())
@@ -103,3 +92,5 @@ def save_feedback(msg: FeedBackMessage):
         return {"success": True}
     else:
         return {"error": "Kayıt bulunamadı"}
+
+app.mount("/", StaticFiles(directory="templates", html=True))
