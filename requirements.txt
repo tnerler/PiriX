@@ -7,3 +7,4 @@ langchain_community
 langchain_openai
 uvicorn
 faiss-cpu
+python
