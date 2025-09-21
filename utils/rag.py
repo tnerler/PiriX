@@ -90,9 +90,9 @@ class PiriXChatbot:
             role = "Kullanıcı" if getattr(msg, "type", "") == "human" else "PiriX"
             messages.append(f"{role}: {msg.content}")
 
-            _, clarified_question = summarize_and_clarify(messages, current_question)
-            print(f"😊 Clarified Question: {clarified_question}")
-            return clarified_question
+        _, clarified_question = summarize_and_clarify(messages, current_question)
+        print(f"😊 Clarified Question: {clarified_question}")
+        return clarified_question
     
     def retrieve(self, state: State): 
         query = state["question"]

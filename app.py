@@ -46,6 +46,7 @@ class FeedBackMessage(BaseModel):
 @app.post("/ask")
 def ask(msg: AskMessage): 
     session_id = msg.session_id or str(uuid.uuid4())
+    chatbot.session_id = session_id
     state = {"question": msg.question, "context": [], "clarified_question": "", "answer": ""}
 
 # retrieve & generate

@@ -1,8 +1,8 @@
+const sessionId = crypto.randomUUID();
 let hasShownWelcomeInSession = false;
 
 function toggleChat() {
   const chatbox = document.getElementById("chatbox");
-  const messages = document.getElementById("messages");
 
   if (chatbox.style.display === "block" || chatbox.style.display === "flex") {
     chatbox.style.display = "none";
@@ -10,7 +10,6 @@ function toggleChat() {
   } else {
     chatbox.style.display = "flex";
 
-    // Sadece session'da ilk açılışta welcome mesajı göster
     if (!hasShownWelcomeInSession) {
       showBotMessage("Merhaba, ben Piri Reis Üniversitesinin Yapay Zeka Asistanı **PiriX**! Size nasıl yardımcı olabilirim? ⚓", false);
       hasShownWelcomeInSession = true;
@@ -32,11 +31,10 @@ function sendMessage() {
   const sendBtn = document.getElementById("send-button");
   const stopBtn = document.getElementById("stop-button");
   const messages = document.getElementById("messages");
-  
+
   const msg = input.value.trim();
   if (!msg) return;
 
-  // Gönder butonunu kilitle, durdur butonunu göster
   if (sendBtn) {
     sendBtn.disabled = true;
     sendBtn.classList.add("blocked");
@@ -45,25 +43,22 @@ function sendMessage() {
 
   isBotResponding = true;
 
-  // Önceki isteği iptal et
   if (controller) controller.abort();
   controller = new AbortController();
 
-  // Kullanıcı mesajını ekle
   const userMessageDiv = document.createElement("div");
   userMessageDiv.className = "chat-message user";
   userMessageDiv.innerHTML = msg;
   messages.appendChild(userMessageDiv);
   input.value = "";
-  
-  // Yeni yazıyor göstergesini ekle
+
   showTypingIndicator();
   messages.scrollTop = messages.scrollHeight;
 
   fetch("http://127.0.0.1:8000/ask", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question: msg, session_id: sessionId}),
+    body: JSON.stringify({ question: msg, session_id: sessionId }),
     signal: controller.signal,
   })
     .then((res) => res.json())
@@ -73,34 +68,23 @@ function sendMessage() {
       let html = marked.parse(rawMarkdown);
       html = makeLinksOpenInNewTab(html);
 
-      // Yazma göstergesini kaldır
       const typingDiv = document.getElementById('typing');
       if (typingDiv) {
-        // Yeni yanıt mesajı oluştur
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("chat-message", "bot");
         messageDiv.innerHTML = html;
         messageDiv.setAttribute("data-feedback-id", feedbackId);
-        
-        // Feedback butonları ekle
         addFeedbackButtons(messageDiv);
-        
-        // Yazma göstergesini yeni mesajla değiştir
         messages.replaceChild(messageDiv, typingDiv);
       }
-      
+
       resetButtons();
     })
     .catch((err) => {
-      // Yazma göstergesini kaldır
       const typingDiv = document.getElementById('typing');
       if (typingDiv) {
-        if (err.name === "AbortError") {
-          typingDiv.innerHTML = "<i>Yanıt durduruldu.</i>";
-        } else {
-          typingDiv.innerHTML = "Bir hata oluştu. Lütfen tekrar deneyin.";
-          console.error("Hata:", err);
-        }
+        typingDiv.innerHTML = err.name === "AbortError" ? "<i>Yanıt durduruldu.</i>" : "Bir hata oluştu. Lütfen tekrar deneyin.";
+        console.error("Hata:", err);
       }
       resetButtons();
     });
