@@ -16,6 +16,8 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 DATABASE = os.getenv("DATABASE")
 
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_PROJECT"] = "pirix-chatbot"
 # --- FastAPI init ---
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")

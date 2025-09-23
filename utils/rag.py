@@ -2,7 +2,7 @@ from utils.summarize_and_clarify import summarize_and_clarify
 from dotenv import load_dotenv
 from utils.state import State
 from utils._faiss import FAISSVectorDatabase
-from models.llm_models.openai_llm import get_llm
+from models.llm_models.get_llm import get_llm
 from operator import itemgetter
 from langchain.prompts import (ChatPromptTemplate, 
                                HumanMessagePromptTemplate, 
@@ -76,7 +76,7 @@ class PiriXChatbot:
             "Bağlam:{context}\n\nSoru:{question}\n\nCevap:"
         ),
     ])
-        chain = template | get_llm()
+        chain = template | get_llm(model_provider="openai")
         return chain
     
 
