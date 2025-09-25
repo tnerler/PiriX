@@ -14,7 +14,6 @@ def get_llm(model_provider="openai"):
                 model_provider="openai",
                 api_key=os.getenv("OPENAI_API_KEY"),
                 temperature=0.7,
-                tracing=True,
             )
 
         elif model_provider=="ollama":
@@ -23,7 +22,6 @@ def get_llm(model_provider="openai"):
                 model="qwen2.5:14b-instruct-q4_K_M",
                 temperature=0.7,
                 num_ctx=16000,
-                tracing=True,
             )
         else:
             raise ValueError(f"Unknown model provider: {model_provider}")
